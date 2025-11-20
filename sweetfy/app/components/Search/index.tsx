@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import InputItens from '../Inputs';
 import { primaryTheme } from '@/theme/theme';
 
@@ -10,6 +11,7 @@ const SearchComponent = ({
   handleSearch,
   placeholderText,
 }: ISearchComponent) => {
+  const [searchTextValue, setSearchTexValue] = useState('');
   const searchFunction = () => {
     console.log('implementar function');
   };
@@ -23,6 +25,7 @@ const SearchComponent = ({
       rightIconFunction={searchFunction}
       inputStyle={{ height: 40 }}
       containerStyle={{ flex: 1 }}
+      getInputValue={setSearchTexValue}
     />
   );
 };
