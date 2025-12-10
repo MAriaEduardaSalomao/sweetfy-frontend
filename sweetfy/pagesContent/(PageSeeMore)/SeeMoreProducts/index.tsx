@@ -1,66 +1,17 @@
-import React, { useState } from 'react';
-import { Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ProductData } from '@/components/Cards/ProductCard';
-
-import DinamicButton from '@/components/Buttons';
-import ListProducts from '@/components/ListOfCards/ListProducts';
-import { ContainerHomePage, ViewTitle } from './style';
-
-export const mockProducts = [
-  {
-    productId: 1,
-    name: 'Bolo de chocolate',
-    preparation: 'Pegue a massa e o recheio que foram produzidos',
-    salePrice: 50.0,
-    profitPercent: 20,
-    productIngredients: [
-      {
-        ingredientId: 1,
-        quantity: 2,
-        unit: 'unidade',
-      },
-    ],
-    productRecipes: [
-      {
-        recipeId: 1,
-        quantity: 2,
-      },
-    ],
-    productServices: [
-      {
-        serviceId: 1,
-        quantity: 2,
-      },
-    ],
-  },
-  {
-    productId: 2,
-    name: 'Bolo de Cenoura',
-    preparation: 'Misture a cenoura, ovo e farinha e leve ao forno.',
-    salePrice: 45.5,
-    profitPercent: 25,
-    productIngredients: [
-      {
-        ingredientId: 2,
-        quantity: 500,
-        unit: 'gramas',
-      },
-    ],
-    productRecipes: [
-      {
-        recipeId: 2,
-        quantity: 1,
-      },
-    ],
-    productServices: [
-      {
-        serviceId: 2,
-        quantity: 1,
-      },
-    ],
-  },
-];
+import { IProduct } from '@/api/register/types';
+import DinamicHeader from '@/components/PageTips/DinamicHeader';
+import { theme } from '@/theme/theme';
+import { H4, H6_medium } from '@/theme/fontsTheme';
+import ProductCard from '@/components/CardsV2/ProductCard';
+import { IconButton } from 'react-native-paper';
+import {
+  epDeleteManyProduct,
+  epDeleteProduct,
+  epGetProducts,
+} from '@/api/register/registerItem';
 
 const SeeMoreProducts = () => {
   const [isSelectionModeActive, setIsSelectionModeActive] = useState(false);
@@ -68,15 +19,21 @@ const SeeMoreProducts = () => {
 
   const router = useRouter();
 
-  const handleNavigateToDetailsProduct = (product: ProductData) => {
-    const productDataString = JSON.stringify(product);
-    router.push({
-      pathname: '/DetailsRecipe',
-      params: {
-        productData: productDataString,
-      },
-    } as any);
+  const [Products, setProducts] = useState<IProduct[]>([]);
+
+  const getProducts = async () => {
+    try {
+      const response = await epGetProducts();
+      setProducts(response);
+    } catch (e) {
+      console.error(e);
+    }
   };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   const toggleItemSelection = (itemId: number) => {
     setSelectedItemIds((prevSelected) => {
       if (prevSelected.includes(itemId)) {
@@ -92,9 +49,24 @@ const SeeMoreProducts = () => {
     }
     setIsSelectionModeActive((prev) => !prev);
   };
+
+  const handleDelete = async () => {
+    try {
+      if (selectedItemIds.length > 1) {
+        await epDeleteManyProduct(selectedItemIds);
+      } else {
+        await epDeleteProduct(selectedItemIds[0]);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      getProducts();
+    }
+  };
+
   const handleSelectAllPress = () => {
-    const allIds = mockProducts.map((p) => p.productId);
-    const currentlyAllSelected = selectedItemIds.length === mockProducts.length;
+    const allIds = Products.map((p) => p.id);
+    const currentlyAllSelected = selectedItemIds.length === Products.length;
 
     if (currentlyAllSelected) {
       setSelectedItemIds([]);
@@ -108,130 +80,81 @@ const SeeMoreProducts = () => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <ContainerHomePage>
-        <Text> Header </Text>
+    <ScrollView>
+      <View style={{}}>
+        <DinamicHeader></DinamicHeader>
 
-        <View style={{ backgroundColor: '#f1e5ebff' }}>
-          <ViewTitle>Produtos</ViewTitle>
+        <View
+          style={{
+            backgroundColor: theme.colors.lightBrown,
+            flexDirection: 'column',
+            gap: 10,
+            padding: 10,
+          }}
+        >
+          <H4 colorKey="darkBrown">Receitas</H4>
 
-          <View style={{ flex: 1, flexDirection: 'column', gap: 10 }}>
-            <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-              <DinamicButton
-                type="brownLight"
-                onPress={handleSelectPress}
-                buttonText="Selecionar"
-                buttonStyle={{
-                  margin: 10,
-                  width: 150,
-                  backgroundColor: 'white',
-                }}
-              />
+          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+            <H6_medium
+              onPress={handleSelectPress}
+              colorKey="darkBrown"
+              style={{ backgroundColor: theme.colors.yellow, padding: 6 }}
+            >
+              {isSelectionModeActive
+                ? `${selectedItemIds.length} selecionado(s)`
+                : 'Selecionar'}
+            </H6_medium>
 
-              <DinamicButton
-                type="brownLight"
+            {selectedItemIds.length !== Products.length && (
+              <H6_medium
                 onPress={handleSelectAllPress}
-                buttonText={
-                  selectedItemIds.length === mockProducts.length
-                    ? 'Remover'
-                    : 'Todos'
-                }
-                disabled={false}
-                buttonStyle={{
-                  margin: 10,
-                  width: 150,
-                  backgroundColor: 'white',
+                colorKey="darkBrown"
+                style={{ backgroundColor: theme.colors.yellow, padding: 6 }}
+              >
+                Selecionar todos
+              </H6_medium>
+            )}
+            <IconButton
+              icon="trash-can-outline"
+              size={12}
+              style={{ margin: 0 }}
+              iconColor={theme.colors.pinkRed}
+              disabled={selectedItemIds.length === 0}
+              onPress={handleDelete}
+            />
+          </View>
+        </View>
+        <View style={{ padding: 10 }}>
+          {Products.map((Product, index) => (
+            <View
+              key={index}
+              style={{
+                backgroundColor: isSelectionModeActive
+                  ? theme.colors.backColor
+                  : '',
+                borderRadius: 8,
+                padding: isSelectionModeActive ? 4 : 2,
+              }}
+            >
+              <ProductCard
+                selectCardFunction={() => {
+                  isSelectionModeActive
+                    ? toggleItemSelection(Product.id)
+                    : router.push({
+                        pathname: '/detailsProduct',
+                        params: {
+                          ProductId: JSON.stringify(Product.id),
+                        },
+                      });
                 }}
+                productData={Product}
+                key={index}
+                selected={selectedItemIds.includes(Product.id)}
               />
             </View>
-
-            {isSelectionModeActive ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    gap: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      flexDirection: 'row',
-                      gap: 10,
-                      borderRadius: 18,
-                      width: 100,
-                      height: 30,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Image
-                      source={require('../../../assets/icons/edit.png')}
-                      style={{
-                        width: 15,
-                        height: 15,
-                      }}
-                    />
-                    Editar
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    gap: 15,
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      flexDirection: 'row',
-                      gap: 10,
-                      borderRadius: 18,
-                      width: 100,
-                      height: 30,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Image
-                      source={require('../../../assets/icons/delete.png')}
-                      style={{
-                        width: 15,
-                        height: 15,
-                      }}
-                    />
-                    Excluir
-                  </View>
-                </TouchableOpacity>
-              </View>
-            ) : null}
-          </View>
-
-          <ListProducts
-            onCardPress={handleNavigateToDetailsProduct}
-            dataProduct={mockProducts}
-            showSelectionControls={isSelectionModeActive}
-            selectedItemIds={selectedItemIds}
-            onItemSelect={toggleItemSelection}
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              margin: 10,
-            }}
-            cardItemStyle={{
-              backgroundColor: '#FFFFFF',
-            }}
-          />
+          ))}
         </View>
-      </ContainerHomePage>
+      </View>
     </ScrollView>
   );
 };

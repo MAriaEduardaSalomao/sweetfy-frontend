@@ -17,6 +17,14 @@ interface IHeader {
 
 const DinamicHeader = ({ returnable, searchable }: IHeader) => {
   const { top: top } = useSafeAreaInsets();
+
+  const handleGoBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/home');
+    }
+  };
   return (
     <HeaderContainerStyled
       flexDirection="column"
@@ -35,7 +43,7 @@ const DinamicHeader = ({ returnable, searchable }: IHeader) => {
             iconColor={theme.colors.darkBrown}
             size={24}
             style={{ margin: 0, position: 'absolute', left: 0 }}
-            onPress={() => router.back()}
+            onPress={handleGoBack}
           />
         )}
         <H3 colorKey="darkBrown">Sweetfy</H3>
