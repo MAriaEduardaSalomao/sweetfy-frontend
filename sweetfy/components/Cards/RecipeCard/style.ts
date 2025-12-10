@@ -1,17 +1,18 @@
+import { theme } from '@/theme/theme';
 import styled from 'styled-components/native';
 
-export const ContainerCard = styled.View`
+export const ContainerCard = styled.TouchableOpacity<{isSelected:boolean}>`
+background-color: ${({isSelected}) => isSelected ? theme.colors.lightBlue : theme.colors.inputWhite};
   border-left-width: 6px;
-  background-color: #ffffff;
   border-left-color: #880741;
   border-color: #880741;
   border-width: 1px;
   border-radius: 10px;
   margin: 5px;
-  padding: 6px;
+  padding: 12px;
+  gap: 12px;
   margin-left: 10px;
-  max-width: 300px;
-  max-height: 500px;
+  max-height: 300px;
 `;
 
 export const ViewCard = styled.View`
@@ -19,6 +20,8 @@ export const ViewCard = styled.View`
   flex-direction: column;
   gap: 25px;
   padding: 5px;
+  width: 190px;
+  height: 260px;
 `;
 
 export const ContainerWithCheckBox = styled.View`

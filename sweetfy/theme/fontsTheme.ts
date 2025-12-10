@@ -54,6 +54,11 @@ ${theme.typography.h6_body_medium}
 color: ${getTextColor};
 `;
 
+export const H6_bold = styled(Text)<StyledTextProps>`
+${theme.typography.h6_body_bold}
+color: ${getTextColor};
+`;
+
 export const Label = styled(Text)<StyledTextProps>`
 ${theme.typography.label}
 color: ${getTextColor};
@@ -66,5 +71,15 @@ color: ${getTextColor};
 
 export const P_medium = styled(Text)<StyledTextProps>`
 ${theme.typography.p_medium}
+color: ${getTextColor};
+`;
+
+export const P_semi = styled(Text)<StyledTextProps>`
+${theme.typography.p_semi}
+color: ${getTextColor};
+`;
+
+export const P_bold = styled(Text)<StyledTextProps>`
+${theme.typography.p_bold}
 color: ${getTextColor};
 `;

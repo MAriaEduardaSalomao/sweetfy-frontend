@@ -1,197 +1,173 @@
 import * as React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, ActivityIndicator } from 'react-native';
 
-import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import FieldNameAndValue from '@/components/FieldNameAndValue';
-import { applyRecipeMargin } from '@/components/ListOfCards/utils';
-import Ingredients from '@/pagesContent/registerItems/ingredients';
-import Service from '@/components/Items/Services';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+
+import { ViewContainer } from './style';
+import { IRecipeDetails } from '@/api/register/types';
 import {
-  PageText,
-  ViewContainer,
-  ViewRecipe,
-  ViewDescription,
-  PageTitle,
-} from './style';
-
-interface RecipeIngredient {
-  id: number;
-  ingredientId: number;
-  ingredientName: string;
-  quantity: number;
-  unit: string;
-  unitPriceSnapshot: number | string | undefined | null;
-  itemCost?: number;
-}
-
-interface RecipeService {
-  id: number;
-  name: string;
-  description: string;
-  providerName: string;
-  unit: string;
-  unitPrice: number;
-  quantity: number;
-}
-
-interface RecipeData {
-  id: number;
-  recipeId: number;
-  name: string;
-  yieldQuantity: number;
-  yieldUnit: string;
-  quantity: number;
-  preparation: string;
-  additionalCostPercent: number;
-  recipeIngredients: RecipeIngredient[];
-  services: RecipeService[];
-}
-
-interface RecipeDataWithCost extends RecipeData {
-  totalCost: number;
-}
-
-const calculateItemCost = (
-  price: number | string | undefined | null,
-  quantity: number | string | undefined | null
-) => {
-  const p = parseFloat(price as any) || 0;
-  const q = parseFloat(quantity as any) || 0;
-  return p * q;
-};
+  epDeleteRecipe,
+  epGetRecipeDetails,
+} from '@/api/register/registerItem';
+import { getAbbreviationUnitType } from '@/pagesContent/registerItems/utils';
+import { H4, H5, H6, H6_medium, P } from '@/theme/fontsTheme';
+import { theme } from '@/theme/theme';
+import DinamicHeader from '@/components/PageTips/DinamicHeader';
+import { IconsContainer } from '@/pagesContent/registerItems/styles';
+import { IconButton } from 'react-native-paper';
 
 const PageDetailsRecipe = () => {
-  const [ingredientCosts, setIngredientCosts] = useState<
-    Record<number, number>
-  >({});
-  const [serviceCosts, setServiceCosts] = useState<Record<number, number>>({});
+  const { recipeId } = useLocalSearchParams();
 
-  const params = useLocalSearchParams();
-  const recipeDataParam = params.recipeData;
-  const recipeDataJson = Array.isArray(recipeDataParam)
-    ? recipeDataParam[0]
-    : recipeDataParam;
-  const recipe: RecipeDataWithCost | null = recipeDataJson
-    ? JSON.parse(recipeDataJson as string)
-    : null;
+  const [recipeDetails, setRecipeDetails] = useState<IRecipeDetails>();
 
-  if (!recipe) {
-    return <PageText>Receita não encontrada.</PageText>;
-  }
+  const [isLoading, setIsLoading] = useState(true);
+  const getRecipeDetails = async () => {
+    try {
+      setIsLoading(true);
+      const response = await epGetRecipeDetails(Number(recipeId));
+      setRecipeDetails(response);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  let quantityServices = 0;
+  const handleDelete = async () => {
+    try {
+      await epDeleteRecipe(Number(recipeId));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
-    if (!recipe) return;
-
-    const initialIngredientCosts = (recipe.recipeIngredients || []).reduce(
-      (acc, item) => {
-        acc[item.id] = calculateItemCost(item.unitPriceSnapshot, item.quantity);
-        return acc;
-      },
-      {} as Record<number, number>
-    );
-
-    const initialServiceCosts = (recipe.services || []).reduce((acc, item) => {
-      quantityServices += 1;
-      const cost = (item.unitPrice || 0) * 1;
-      acc[item.id] = cost;
-      return acc;
-    }, {} as Record<number, number>);
-
-    setIngredientCosts(initialIngredientCosts);
-    setServiceCosts(initialServiceCosts);
-  }, [recipe.id]);
-
-  const updateIngredientCost = useCallback((itemId: number, cost: number) => {
-    setIngredientCosts((prevCosts) => ({
-      ...prevCosts,
-      [itemId]: cost,
-    }));
+    getRecipeDetails();
   }, []);
-
-  const updateServiceCost = useCallback((itemId: number, cost: number) => {
-    setServiceCosts((prevCosts) => ({
-      ...prevCosts,
-      [itemId]: cost,
-    }));
-  }, []);
-
-  const totalCostValue = useMemo(() => {
-    const ingredientsBaseCost = Object.values(ingredientCosts).reduce(
-      (sum, cost) => sum + cost,
-      0
-    );
-    const servicesBaseCost = Object.values(serviceCosts).reduce(
-      (sum, cost) => sum + cost,
-      0
-    );
-    const baseCost = ingredientsBaseCost + servicesBaseCost;
-
-    if (baseCost === 0 && recipe.totalCost > 0) {
-      return String(recipe.totalCost.toFixed(2));
-    }
-
-    const finalCost = applyRecipeMargin(baseCost, recipe.additionalCostPercent);
-
-    return finalCost.toFixed(2);
-  }, [
-    ingredientCosts,
-    serviceCosts,
-    recipe.additionalCostPercent,
-    recipe.totalCost,
-  ]);
-
-  const formatYield = `${recipe.yieldQuantity} ${recipe.yieldUnit}`;
-  const formatCurrency = (value: string) => `R$ ${value.replace('.', ',')}`;
 
   return (
     <ScrollView>
-      <ViewContainer>
-        <ViewRecipe>
-          <ViewDescription>
-            <PageTitle> {recipe.name} </PageTitle>
-
-            <FieldNameAndValue
-              name="Rendimento"
-              value={formatYield}
-              nameStyle={{ fontSize: 25, fontWeight: 'bold' }}
-              valueStyle={{ fontSize: 25 }}
-            />
-            <FieldNameAndValue
-              name="Custo total"
-              value={formatCurrency(totalCostValue)}
-              nameStyle={{ fontSize: 25, fontWeight: 'bold' }}
-              valueStyle={{ fontSize: 25 }}
-            />
-            <PageText> {recipe.preparation}</PageText>
-
-            <PageTitle> Gastos totais </PageTitle>
-
-            <View>
-              {recipe.recipeIngredients?.map((item) => (
-                <Ingredients
-                  key={item.id}
-                  data={item}
-                  onCostCalculated={updateIngredientCost}
+      <DinamicHeader></DinamicHeader>
+      {isLoading ? (
+        <ActivityIndicator size="large"></ActivityIndicator>
+      ) : (
+        <>
+          <ViewContainer style={{}}>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <H4 colorKey="darkBrown">{recipeDetails.name} </H4>
+              <IconsContainer>
+                <IconButton
+                  icon={require('../../../assets/icons/edit.png')}
+                  size={20}
+                  style={{ margin: 2 }}
+                  iconColor={theme.colors.darkBrown}
+                  onPress={() => {
+                    router.push({
+                      pathname: '/createRecipePage',
+                      params: {
+                        pageMode: 'edit',
+                        id: recipeDetails.id,
+                      },
+                    });
+                  }}
                 />
+                <IconButton
+                  icon={require('../../../assets/icons/delete.png')}
+                  size={20}
+                  style={{ margin: 2 }}
+                  iconColor={theme.colors.darkBrown}
+                  onPress={handleDelete}
+                />
+              </IconsContainer>
+            </View>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <H5 colorKey="darkBrown">Rendimento total</H5>
+              <H6_medium colorKey="darkBrown">
+                {recipeDetails.yieldQuantity}
+                {getAbbreviationUnitType(recipeDetails.yieldUnit.toString())}
+              </H6_medium>
+            </View>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <H5 colorKey="darkBrown">Custo total</H5>
+              <H6_medium colorKey="darkBrown">
+                R$
+                {(recipeDetails.baseCost * recipeDetails.yieldQuantity).toFixed(
+                  2
+                )}
+              </H6_medium>
+            </View>
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            >
+              <H5 colorKey="darkBrown">
+                Custos incalculáveis<H6 colorKey="darkBrown">(%)</H6>
+              </H5>
+              <H6_medium colorKey="darkBrown">
+                {recipeDetails.additionalCostPercent}%
+              </H6_medium>
+            </View>
+            {recipeDetails.preparation && (
+              <View>
+                <H5 colorKey="darkBrown">Modo de preparo</H5>
+                <P colorKey="darkBrown">{recipeDetails.preparation}</P>
+              </View>
+            )}
+            <View />
+            <H4 colorKey="darkBrown">Gastos Totais</H4>
+            <View style={{ flexDirection: 'column', gap: 20 }}>
+              {recipeDetails.recipeIngredients?.map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor: theme.colors.yellowLight,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    padding: 8,
+                    borderRadius: 8,
+                  }}
+                >
+                  <P colorKey="pinkRed">{item.ingredientName}</P>
+                  <P colorKey="pinkRed">R${item.unitPriceSnapshot}</P>
+                  <P colorKey="pinkRed">
+                    {item.quantity}
+                    {getAbbreviationUnitType(item.unit.toString())}
+                  </P>
+                </View>
               ))}
             </View>
 
             <View>
-              {recipe.services?.map((item) => (
-                <Service
-                  key={item.id}
-                  data={item}
-                  onCostCalculated={updateServiceCost}
-                  quantity={item.quantity}
-                />
+              {recipeDetails.recipeServices?.map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor: theme.colors.yellowLight,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                  }}
+                >
+                  <P colorKey="pinkRed">{item.serviceName}</P>
+                  <P colorKey="pinkRed">R${item.unitPriceSnapshot}</P>
+                  <P colorKey="pinkRed">
+                    {item.quantity}
+                    {getAbbreviationUnitType(item.unit.toString()) === 'hora(s)'
+                      ? '/hr.'
+                      : '/unid.'}
+                  </P>
+                </View>
               ))}
             </View>
-          </ViewDescription>
-        </ViewRecipe>
-      </ViewContainer>
+          </ViewContainer>
+        </>
+      )}
     </ScrollView>
   );
 };

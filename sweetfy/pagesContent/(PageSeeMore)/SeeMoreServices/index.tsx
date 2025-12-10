@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { IRecipe } from '@/api/register/types';
+import { IService } from '@/api/register/types';
 import DinamicHeader from '@/components/PageTips/DinamicHeader';
 import { theme } from '@/theme/theme';
 import { H4, H6_medium } from '@/theme/fontsTheme';
-import RecipeCard from '@/components/CardsV2/RecipeCard';
+import serviceCard from '@/components/CardsV2/ServiceCard';
 import { IconButton } from 'react-native-paper';
 import {
-  epDeleteManyRecipes,
-  epDeleteRecipe,
-  epGetRecipes,
+  epDeleteManyServices,
+  epDeleteService,
+  epGetServices,
 } from '@/api/register/registerItem';
+import ServiceCard from '@/components/CardsV2/ServiceCard';
 
-const SeeMoreRecipes = () => {
+const SeeMoreservices = () => {
   const [isSelectionModeActive, setIsSelectionModeActive] = useState(false);
   const [selectedItemIds, setSelectedItemIds] = useState<number[]>([]);
 
   const router = useRouter();
 
-  const [recipes, setRecipes] = useState<IRecipe[]>([]);
+  const [services, setservices] = useState<IService[]>([]);
 
-  const getRecipes = async () => {
+  const getservices = async () => {
     try {
-      const response = await epGetRecipes();
-      setRecipes(response);
+      const response = await epGetServices();
+      setservices(response);
     } catch (e) {
       console.error(e);
     }
   };
 
   useEffect(() => {
-    getRecipes();
+    getservices();
   }, []);
 
   const toggleItemSelection = (itemId: number) => {
@@ -53,20 +54,20 @@ const SeeMoreRecipes = () => {
   const handleDelete = async () => {
     try {
       if (selectedItemIds.length > 1) {
-        await epDeleteManyRecipes(selectedItemIds);
+        await epDeleteManyServices(selectedItemIds);
       } else {
-        await epDeleteRecipe(selectedItemIds[0]);
+        await epDeleteService(selectedItemIds[0]);
       }
     } catch (e) {
       console.error(e);
     } finally {
-      getRecipes();
+      getservices();
     }
   };
 
   const handleSelectAllPress = () => {
-    const allIds = recipes.map((p) => p.id);
-    const currentlyAllSelected = selectedItemIds.length === recipes.length;
+    const allIds = services.map((p) => p.id);
+    const currentlyAllSelected = selectedItemIds.length === services.length;
 
     if (currentlyAllSelected) {
       setSelectedItemIds([]);
@@ -105,7 +106,7 @@ const SeeMoreRecipes = () => {
                 : 'Selecionar'}
             </H6_medium>
 
-            {selectedItemIds.length !== recipes.length && (
+            {selectedItemIds.length !== services.length && (
               <H6_medium
                 onPress={handleSelectAllPress}
                 colorKey="darkBrown"
@@ -125,7 +126,7 @@ const SeeMoreRecipes = () => {
           </View>
         </View>
         <View style={{ padding: 10 }}>
-          {recipes.map((recipe, index) => (
+          {services.map((service, index) => (
             <View
               key={index}
               style={{
@@ -136,20 +137,13 @@ const SeeMoreRecipes = () => {
                 padding: isSelectionModeActive ? 4 : 2,
               }}
             >
-              <RecipeCard
+              <ServiceCard
                 selectCardFunction={() => {
-                  isSelectionModeActive
-                    ? toggleItemSelection(recipe.id)
-                    : router.push({
-                        pathname: '/detailsRecipe',
-                        params: {
-                          recipeId: JSON.stringify(recipe.id),
-                        },
-                      });
+                  isSelectionModeActive && toggleItemSelection(service.id);
                 }}
-                recipeData={recipe}
+                serviceData={service}
                 key={index}
-                selected={selectedItemIds.includes(recipe.id)}
+                selected={selectedItemIds.includes(service.id)}
               />
             </View>
           ))}
@@ -159,4 +153,4 @@ const SeeMoreRecipes = () => {
   );
 };
 
-export default SeeMoreRecipes;
+export default SeeMoreservices;

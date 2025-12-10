@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { primaryTheme, theme } from '../../../theme/theme';
 import { Icon } from 'react-native-paper';
@@ -6,28 +6,60 @@ import { H5 } from '../../../theme/fontsTheme';
 import { ICustomDropdownItem } from '../types';
 import { Container } from '@/components/Inputs/style';
 import AvailableItemsBox from '@/components/AvailableItemsBox';
+import { includedItemFields } from '@/pagesContent/registerItems/products';
 
 interface ICustomDropdownProps {
   options: ICustomDropdownItem[];
+  currentSelectedItems: includedItemFields[];
   placeholder: string;
   searchable?: boolean;
   searchPlaceholder?: string;
   requiredField?: boolean;
   title?: string;
-  selectedOptions: any;
-  setSelectedOptions(value: any): void;
+  setSelectedOptions(value: includedItemFields[]): void;
 }
 
 const CustomDropdownInput = ({
   options,
+  currentSelectedItems,
   placeholder,
   searchPlaceholder,
   requiredField,
   title,
-  selectedOptions,
   setSelectedOptions,
 }: ICustomDropdownProps) => {
   const [showDropDownOptions, setShowDropDownOptions] = useState(false);
+  const [selectedItemsIds, setSelectedItemsIds] = useState<number[]>(
+    currentSelectedItems.map((item) => item.id)
+  );
+
+  useEffect(() => {
+    const currentIds = currentSelectedItems.map((item) => item.id);
+    setSelectedItemsIds(currentIds);
+  }, [currentSelectedItems]);
+
+  useEffect(() => {
+    const newSelectedObjects = options
+      .filter((option) => selectedItemsIds.includes(option.value))
+      .map((includedItem) => ({
+        id: includedItem.value,
+        category: includedItem.category,
+        quantity: includedItem.itemInitialQuantity,
+        quantityMultiplier: 1,
+        unitPrice: includedItem.unitPrice,
+        unitType: includedItem.quantityUnit,
+      }));
+
+    if (
+      newSelectedObjects.length !== currentSelectedItems.length ||
+      !newSelectedObjects.every((item) =>
+        currentSelectedItems.some((curr) => curr.id === item.id)
+      )
+    ) {
+      setSelectedOptions(newSelectedObjects);
+    }
+  }, [selectedItemsIds]);
+
   return (
     <Container
       style={{ flex: 1 }}
@@ -42,7 +74,7 @@ const CustomDropdownInput = ({
       <DropDownPicker
         multiple
         open={showDropDownOptions}
-        value={selectedOptions}
+        value={selectedItemsIds}
         multipleText="Selecionando..."
         ListEmptyComponent={() => <></>}
         items={options}
@@ -54,14 +86,14 @@ const CustomDropdownInput = ({
               itemName={item.label}
               quantityUnit={item.quantityUnit}
               quantity={item.itemInitialQuantity}
-              onSelect={() => props.onPress(item)}
+              onSelect={() => props.onPress(props.item as any)}
               isSelected={props.isSelected}
             />
           );
         }}
         dropDownDirection="BOTTOM"
         setOpen={setShowDropDownOptions}
-        setValue={setSelectedOptions}
+        setValue={setSelectedItemsIds}
         searchable
         placeholder={placeholder}
         searchPlaceholder={searchPlaceholder}

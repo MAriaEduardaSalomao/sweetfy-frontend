@@ -31,7 +31,6 @@ const SpecificFormatInput = ({
       delimiter="."
       separator=","
       precision={precisionByType}
-      minValue={0}
       renderTextInput={(textInputProps) => (
         <InputItens
           containerStyle={[rest.containerStyle, { flex: 1 }]}

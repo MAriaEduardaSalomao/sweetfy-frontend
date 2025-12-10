@@ -1,17 +1,19 @@
+import { theme } from '@/theme/theme';
 import styled from 'styled-components/native';
 
-export const ContainerCard = styled.View`
+export const ContainerCardOrder = styled.TouchableOpacity<{isSelected:boolean}>`
+background-color: ${({isSelected}) => isSelected ? theme.colors.lightBlue : theme.colors.inputWhite};
   border-left-width: 6px;
   border-left-color: #880741;
   border-color: #880741;
   border-width: 1px;
   border-radius: 10px;
   margin: 5px;
-  padding: 6px;
+  padding: 12px;
+  gap: 10px;
   margin-left: 10px;
   min-height: 200px;
   width: 320px;
-  background-color: #FFFFFF;
 
 `;
 

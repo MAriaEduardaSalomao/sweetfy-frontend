@@ -1,3 +1,4 @@
+import { Categoty } from "@/pagesContent/registerItems/products";
 import { UnitTypeEnum } from "../../pagesContent/registerItems/types";
 
 export interface IDropdownItem {
@@ -10,4 +11,6 @@ export interface ICustomDropdownItem{
   value: number;
   itemInitialQuantity: number,
   quantityUnit: UnitTypeEnum,
+  unitPrice: number,
+  category: Categoty,
 }

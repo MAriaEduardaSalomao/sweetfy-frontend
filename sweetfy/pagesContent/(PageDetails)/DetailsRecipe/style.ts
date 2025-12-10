@@ -1,3 +1,4 @@
+import { theme } from '@/theme/theme';
 import styled from 'styled-components/native';
 
 export const PageTitle = styled.Text`
@@ -28,10 +29,8 @@ margin: 30px;
 export const ViewContainer = styled.View`
   display: flex;
   flex-direction: column;
-  align-itens: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  background-color: #faede9ff
-
+  flex: 1;
+  background-color: ${theme.colors.lightBrown};
+  padding: 20px;
+  gap: 20px;
 `;

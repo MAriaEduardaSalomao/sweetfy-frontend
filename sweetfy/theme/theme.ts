@@ -77,6 +77,16 @@ const typography= {
             fontWeight: fontWeight.medium,
             fontFamily: fontFamily,
         },
+        p_semi: {
+            fontSize: fontSize.p,
+            fontWeight: fontWeight.semi,
+            fontFamily: fontFamily,
+        },
+        p_bold: {
+            fontSize: fontSize.p,
+            fontWeight: fontWeight.bold,
+            fontFamily: fontFamily,
+        },
         label: {
             fontSize: fontSize.label,
             fontWeight: fontWeight.regular,
@@ -93,9 +103,12 @@ const colors ={
     yellowLight: '#FFFFFD',
     inputWhite: '#FFFFFF',
     pinkRed: '#880741',
+    red:'#F33141',
     green: '#69B460',
     white: '#F5F0F0',
     lightBlue: '#E9E9EF',
+    rippleColor: '#E2D8D826',
+    backColor: '#E2D8D8'
 }
 
 export type ButtonVariantTypes = 'brownLight' | 'outlined' | 'yellow';

@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 
 export const Container = styled.TouchableOpacity<{selectedBackgroundColor: boolean}>`
     backgroundColor: ${({selectedBackgroundColor}) => selectedBackgroundColor ? theme.colors.lightBlue : theme.colors.yellowLight};
-    max-height: 36px;
+    max-height: 48px;
     border-radius: 8px;
     display: flex;
     flex-direction: row;

@@ -3,7 +3,7 @@ import DropdownInput from '../../../components/Dropdown';
 import InputItens from '../../../components/Inputs';
 import { secondaryTheme } from '../../../theme/theme';
 import { QuantityInputsContainer } from '../styles';
-import { fetchRegisterServices } from '../../../api/register/registerItem';
+import { epPostService } from '../../../api/register/registerItem';
 import { UnitTypeEnum, pageType, serviceRegisterUnitOptions } from '../types';
 import { router } from 'expo-router';
 import DinamicButton from '../../../components/Buttons';
@@ -32,7 +32,7 @@ const RegisterServicesComponent = ({ type }: PageProps) => {
   const handleRegisterServices = async () => {
     try {
       setLoading(true);
-      await fetchRegisterServices({
+      await epPostService({
         name,
         description,
         providerName,

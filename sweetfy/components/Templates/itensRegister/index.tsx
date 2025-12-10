@@ -20,7 +20,6 @@ import { IconButton } from 'react-native-paper';
 
 interface IItensRegisterTemplate {
   registerItemName: string;
-  type: pageType;
   children: ReactNode;
   showSnackbar: boolean;
   snackbarType: DinamicSnackbarType;
@@ -33,7 +32,6 @@ interface IItensRegisterTemplate {
 
 const ItensRegisterTemplate = ({
   registerItemName,
-  type,
   children,
   showSnackbar,
   snackbarType,
@@ -43,42 +41,26 @@ const ItensRegisterTemplate = ({
   onDismissModal,
   onConfirmModal,
 }: IItensRegisterTemplate) => {
+  const words = registerItemName.split(' ');
   const lastLetter = () => {
-    const getFirstWord = registerItemName.split(' ');
-    const stringLenght = getFirstWord.length;
+    const stringLenght = words.length;
     return registerItemName[stringLenght - 1];
   };
   return (
     <PageContainer>
       <DinamicHeader returnable />
       <ContentContainer>
-        <TitleContainer>
-          <H4>{registerItemName}</H4>
-          {type === 'edit' && (
-            <IconsContainer>
-              <IconButton
-                icon={require('../../../assets/icons/edit.png')}
-                size={20}
-                iconColor={theme.colors.yellow}
-                onPress={() => {}} //implementar
-              />
-              <IconButton
-                icon={require('../../../assets/icons/delete.png')}
-                size={20}
-                iconColor={theme.colors.yellow}
-                onPress={() => {}} //implementar
-              />
-            </IconsContainer>
-          )}
-        </TitleContainer>
+        <H4>{registerItemName}</H4>
 
-        {templateOptions && (
+        {/* {templateOptions && templateOptions.length > 0 && (
           <TemplateComponent
             options={templateOptions}
-            placeholder="Template de receitas"
-            searchPlaceholder="Busque receitas já cadastradas"
+            placeholder={`Template de ${words[1]}s`}
+            searchPlaceholder={`Busque ${words[1]}s salv${
+              lastLetter() === 'a' ? 'a' : 'o'
+            }s`}
           />
-        )}
+        )} */}
         <FormContainer>{children}</FormContainer>
       </ContentContainer>
       <DinamicSnackbar

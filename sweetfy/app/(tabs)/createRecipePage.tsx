@@ -1,7 +1,7 @@
-import PageDetailsRecipe from '@/pagesContent/(PageDetails)/DetailsRecipe';
+import RegisterRecipesComponent from '../../pagesContent/registerItems/recipes';
 
 const CreateRecipePage = () => {
-  return <PageDetailsRecipe />;
+  return <RegisterRecipesComponent />;
 };
 
 export default CreateRecipePage;

@@ -65,6 +65,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="createOrderPage"
+        options={{
+          href: null,
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="createIngredientPage"
         options={{
           href: null,

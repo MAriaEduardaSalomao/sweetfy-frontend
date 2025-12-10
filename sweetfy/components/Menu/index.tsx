@@ -56,7 +56,9 @@ const MenuComponent = () => {
             ),
             label: 'Cadastrar encomenda',
             labelStyle: { ...actionLabelStyle },
-            onPress: () => {},
+            onPress: () => {
+              router.push('/createOrderPage');
+            },
           },
           {
             ...actionsStyle,

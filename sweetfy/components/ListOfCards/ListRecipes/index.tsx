@@ -3,6 +3,8 @@ import { ContainerList } from './style';
 import React, { useMemo } from 'react';
 import { ViewStyle, TouchableOpacity } from 'react-native';
 import { calculateRecipeTotalCost } from '../utils';
+import RecipeCard from '@/components/CardsV2/RecipeCard';
+import { IRecipe } from '@/api/register/types';
 
 type NavigateFunction = (recipe: RecipeDataWithCost) => void;
 
@@ -39,13 +41,13 @@ interface Service {
 }
 
 interface PropsListOfCards {
-  dataRecipe: RecipeData[];
+  dataRecipe: IRecipe[];
   showSelectionControls?: boolean;
   onItemSelect?: (itemId: number) => void;
   selectedItemIds?: number[];
   style?: ViewStyle;
   cardItemStyle?: ViewStyle;
-  onCardPress: NavigateFunction;
+  onCardPress(): void;
 }
 
 interface RecipeDataWithCost extends RecipeData {
@@ -62,32 +64,14 @@ const ListRecipes: React.FC<PropsListOfCards> = ({
   cardItemStyle,
   onCardPress,
 }) => {
-  const recipesWithCost: RecipeDataWithCost[] = useMemo(() => {
-    return dataRecipe.map((item) => {
-      const totalCost = calculateRecipeTotalCost(item);
-
-      return {
-        ...item,
-        totalCost: totalCost,
-      } as RecipeDataWithCost;
-    });
-  }, [dataRecipe]);
-
   return (
     <ContainerList style={style}>
-      {recipesWithCost.map((item) => (
+      {dataRecipe.map((item) => (
         <TouchableOpacity
           key={item.id}
-          onPress={() => onCardPress(item)}
+          onPress={() => onCardPress()}
         >
-          <CardRecipe
-            id={item.id}
-            data={item}
-            checkBoxSelected={selectedItemIds.includes(item.id)}
-            showCheckBox={showSelectionControls}
-            functionButtonSelected={onItemSelect}
-            cardStyle={cardItemStyle}
-          />
+          <RecipeCard recipeData={item}></RecipeCard>
         </TouchableOpacity>
       ))}
     </ContainerList>

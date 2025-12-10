@@ -36,7 +36,7 @@ interface Service {
 }
 
 interface CardRecipeProps {
-  data: RecipeData;
+  data: IRecipe;
   id: number;
   showCheckBox: boolean;
   checkBoxSelected: boolean;
@@ -53,6 +53,7 @@ import {
   TitleCard,
   TextCard,
 } from './style';
+import { IRecipe } from '@/api/register/types';
 
 const CardRecipe: React.FC<CardRecipeProps> = ({
   id,
@@ -96,12 +97,11 @@ const CardRecipe: React.FC<CardRecipeProps> = ({
           />
           <FieldNameAndValue
             name="Custo total"
-            value={formatCurrency(data.totalCost.toFixed(2))}
+            value={formatCurrency(data.baseCost.toFixed(2))}
             nameStyle={{ fontWeight: 'bold' }}
             valueStyle={{ width: 150 }}
           />
-          <TextCard numberOfLines={5}>{data.preparation}</TextCard>
-          <ListIngredientesInput items={data.recipeIngredients} />
+          <TextCard numberOfLines={5}>{data.name}</TextCard>
         </ViewCard>
       </ContainerCard>
     </ContainerWithCheckBox>

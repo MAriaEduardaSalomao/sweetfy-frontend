@@ -42,7 +42,8 @@ interface includedServiceDetails{
   serviceId: number,
   serviceName: string,
   quantity: number,
-  unitPriceSnapshot: number
+  unitPriceSnapshot: number,
+  unit: UnitTypeEnum;
 }
 
 interface includedRecipes{
@@ -56,7 +57,6 @@ interface includedRecipeDetails{
   recipeName: string,
   quantity: number,
   unitPriceSnapshot: number
-
 }
 
 export interface IRegisterRecipeRequest{
@@ -77,6 +77,26 @@ export interface IPostProductRequest{
   productIngredients:includedIngredients[],
   productServices?:includedServices[],
   productRecipes?:includedRecipes[],
+}
+interface includedProducts{
+  productId: number,
+  quantity: number,
+}
+
+interface includedProductDetails{
+   id: number,
+  productId: number,
+  productName: string,
+  quantity: number,
+  unitPriceSnapshot: number,
+  costSnapshot: number
+}
+export interface IPostOrderRequest{
+  name: string,
+  description: string,
+  status: string,
+  orderProducts:includedProducts[],
+  orderRecipes:includedRecipes[],
 }
 
 export interface IIngredient{
@@ -105,11 +125,15 @@ export interface IService{
 export interface IRecipe{
     id: number,
     name: string,
+    preparation: string,
+    additionalCostPercent:number,
     yieldQuantity: number,
     yieldUnit: UnitTypeEnum,
     baseCost: number,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    recipeIngredients: includedIngredientDetails[],
+    recipeServices: includedServiceDetails[]
 }
 
 export interface IProduct{
@@ -126,4 +150,29 @@ export interface IProduct{
     productRecipes:includedRecipeDetails[],
     productServices:includedServiceDetails[]
 }
+export interface IOrder{
+    id: number,
+    name: string,
+    description: string,
+    salePrice:number,
+    totalYield:number,
+    totalCost:number,
+    profit: number,
+    status: string,
+    createdAt: Date,
+    orderProducts: includedProductDetails[]
+}
 
+export interface IRecipeDetails{
+    id: number,
+    name: string,
+    additionalCostPercent:number,
+    yieldQuantity: number,
+    yieldUnit: UnitTypeEnum,
+    preparation?: string,
+    baseCost: number,
+    createdAt: Date,
+    updatedAt: Date,
+    recipeIngredients: includedIngredientDetails[],
+    recipeServices: includedServiceDetails[]
+}

@@ -26,7 +26,7 @@ export const ingredientRegisterUnitOptions: IDropdownItem[] = [
 ];
 
 export const serviceRegisterUnitOptions: IDropdownItem[] = [
-  { label: 'unidade(s)', value: UnitTypeEnum.Unidade },
-  { label: 'hora(s) trabalhada(s)', value: UnitTypeEnum.Hora },
+  { label: 'unidade', value: UnitTypeEnum.Unidade },
+  { label: 'hora trabalhada', value: UnitTypeEnum.Hora },
 ];
 

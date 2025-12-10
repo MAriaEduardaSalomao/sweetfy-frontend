@@ -1,6 +1,6 @@
 import { H6_medium, P } from '../../theme/fontsTheme';
 import { theme, transparentStepperTheme } from '../../theme/theme';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputItens from '../Inputs';
 import {
   ButtonBox,
@@ -20,6 +20,7 @@ interface IAvailableItemsBox {
   isSelected: boolean;
   onSelect(item: any): void;
   removeItem?(): void;
+  onUpdate?(newTotal: number, newMultiplier: number): void;
 }
 
 const AvailableItemsBox = ({
@@ -30,10 +31,18 @@ const AvailableItemsBox = ({
   isSelected,
   onSelect,
   removeItem,
+  onUpdate,
 }: IAvailableItemsBox) => {
   const [totalValue, setTotalValue] = useState<number>(quantity);
   const [multiplier, setMultiplier] = useState<number>(1);
+  const [isFocused, setIsFocused] = useState(false);
   const unitLabel = getAbbreviationUnitType(quantityUnit.toString());
+
+  useEffect(() => {
+    if (inDropDown) {
+      setTotalValue(quantity);
+    }
+  }, [quantity, inDropDown]);
 
   const handleInputChange = (text: string) => {
     const cleanText = text.replace(/[^0-9.,]/g, '').replace(',', '.');
@@ -44,18 +53,25 @@ const AvailableItemsBox = ({
 
       const newMultiplier = quantity > 0 ? Math.ceil(newTotal / quantity) : 1;
       setMultiplier(newMultiplier);
+
+      if (onUpdate) onUpdate(newTotal, newMultiplier);
     } else {
       setTotalValue(quantity);
       setMultiplier(1);
+      if (onUpdate) onUpdate(quantity, 1);
     }
   };
 
   const handleStepperChange = (change: number) => {
     const newMultiplier = Math.max(0, multiplier + change);
-    setMultiplier(newMultiplier);
+    const newTotal = newMultiplier * quantity;
 
-    setTotalValue(newMultiplier * quantity);
+    setMultiplier(newMultiplier);
+    setTotalValue(newTotal);
+
+    if (onUpdate) onUpdate(newTotal, newMultiplier);
   };
+
   return (
     <Container
       onPress={onSelect}
@@ -63,24 +79,31 @@ const AvailableItemsBox = ({
     >
       <P
         colorKey="pinkRed"
-        style={{ width: '30%' }}
+        style={{ flex: 0.9 }}
       >
         {itemName}
       </P>
       <InputItens
-        containerStyle={{ width: '35%' }}
+        containerStyle={{ width: '25%' }}
         inputStyle={{
-          ...theme.typography.p_medium,
           textAlign: 'center',
           textDecorationLine: !inDropDown ? 'underline' : 'none',
           textDecorationColor: !inDropDown ? theme.colors.pinkRed : '',
         }}
+        contentStyle={{
+          paddingVertical: 0,
+          paddingHorizontal: 0,
+          margin: 0,
+          ...theme.typography.p_medium,
+        }}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         inputMode="numeric"
         keyboardType="number-pad"
         placeholder=""
         onChangeText={handleInputChange}
         theme={transparentStepperTheme}
-        value={totalValue + unitLabel}
+        value={isFocused ? String(totalValue) : `${totalValue}${unitLabel}`}
         disabled={inDropDown}
       />
       {!inDropDown && (

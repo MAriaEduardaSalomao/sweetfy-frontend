@@ -1,368 +1,323 @@
-import { TouchableOpacity, ScrollView, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import { OrderData } from '@/components/Cards/OrderCard';
-import { ProductData } from '@/components/Cards/ProductCard';
-import { RecipeData } from '@/components/Cards/RecipeCard';
-import React from 'react';
-import { Title } from 'react-native-paper';
 import {
-  ContainerListOFCards,
-  ViewButtonTitle,
-} from '@/pagesContent/home/style';
-import ListOrders from '@/components/ListOfCards/ListOrders';
-import ListProducts from '@/components/ListOfCards/ListProducts';
-import ListRecipes from '@/components/ListOfCards/ListRecipes';
+  TouchableOpacity,
+  ScrollView,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 
-const mockOrders = [
-  {
-    id: 1,
-    name: 'Bolo de morango',
-    description: 'Encomenda realizada pela Eliana, no bairro Taquaril',
-    totalYield: 5,
-    totalCost: 200,
-    salePrice: 100,
-    profit: 100,
-    status: 'Em produção',
-    orderProducts: [
-      {
-        productId: 1,
-        name: 'Bolo de Cenoura',
-        preparation: 'Misture a cenoura, ovo e farinha e leve ao forno.',
-        salePrice: 45.5,
-        profitPercent: 25,
-        productIngredients: [
-          {
-            id: 1,
-            ingredientId: 1,
-            ingredientName: 'Leite condesado',
-            quantity: 3,
-            unit: 'kilo',
-            unitPriceSnapshot: 5,
-            itemCost: 15,
-          },
-        ],
-        productRecipes: [
-          {
-            id: 1,
-            recipeId: 1,
-            recipeName: 'Brigadeiro Simples',
-            quantity: 2,
-            unitPriceSnapshot: 10.5,
-            costSnapshot: 5.25,
-            totalCost: 10.5,
-            totalProfit: 10.5,
-          },
-        ],
-        productServices: [
-          {
-            id: 1,
-            name: 'Uber',
-            description: 'Entrega',
-            providerName: 'Marcelo',
-            unit: 'Dinheiro',
-            unitPrice: 10,
-          },
-        ],
-      },
-    ],
-    orderRecipes: [
-      {
-        id: 1,
-        recipeId: 1,
-        recipeName: 'Brigadeiro Simples',
-        quantity: 5,
-        unitPriceSnapshot: 10.5,
-        costSnapshot: 5.25,
-        totalCost: 26.25,
-        totalProfit: 26.25,
-      },
-    ],
-  },
-];
+import React, { useEffect, useState } from 'react';
 
-const mockRecipes = [
-  {
-    id: 1,
-    recipeId: 1,
-    name: 'Brigadeiro Simples',
-    yieldQuantity: 20,
-    yieldUnit: 'unidades',
-    preparation:
-      'Coloque o leite condesado, a manteiga, e o chocolate. Misture até ferver',
-    additionalCostPercent: 5,
-    recipeIngredients: [
-      {
-        id: 1,
-        ingredientId: 1,
-        ingredientName: 'Leite Condensado',
-        quantity: 1,
-        unit: 'lata',
-        unitPriceSnapshot: 5,
-      },
-    ],
-    productServices: [
-      {
-        id: 1,
-        name: 'Uber',
-        description: 'Entrega',
-        providerName: 'Marcelo',
-        unit: 'Dinheiro',
-        unitPrice: 10,
-      },
-    ],
-  },
+import MenuComponent from '@/components/Menu';
+import DinamicHeader from '@/components/PageTips/DinamicHeader';
+import {
+  IIngredient,
+  IOrder,
+  IProduct,
+  IRecipe,
+  IService,
+} from '@/api/register/types';
+import {
+  epGetIngredients,
+  epGetOrders,
+  epGetProducts,
+  epGetRecipes,
+  epGetServices,
+} from '@/api/register/registerItem';
+import { H4, H6, H6_bold } from '@/theme/fontsTheme';
+import RecipeCard from '@/components/CardsV2/RecipeCard';
 
-  {
-    id: 2,
-    recipeId: 2,
-    name: 'Brigadeiro Gourmet',
-    yieldQuantity: 15,
-    yieldUnit: 'unidades',
-    preparation: 'Utilize chocolate nobre e siga o processo de temperagem.',
-    additionalCostPercent: 10,
-    recipeIngredients: [
-      {
-        id: 2,
-        ingredientId: 2,
-        ingredientName: 'Chocolate Nobre',
-        quantity: 2,
-        unit: 'g',
-        unitPriceSnapshot: 15,
-      },
-    ],
-  },
-] as any;
-
-const mockProducts = [
-  {
-    productId: 1,
-    name: 'Bolo de Cenoura',
-    preparation: 'Misture a cenoura, ovo e farinha e leve ao forno.',
-    salePrice: 45.5,
-    profitPercent: 25,
-    productIngredients: [
-      {
-        id: 1,
-        ingredientId: 1,
-        ingredientName: 'Leite condesado',
-        quantity: 3,
-        unit: 'kilo',
-        unitPriceSnapshot: 5,
-      },
-    ],
-    productRecipes: [
-      {
-        id: 1,
-        recipeId: 1,
-        name: 'Brigadeiro Simples',
-        yieldQuantity: 20,
-        yieldUnit: 'unidades',
-        preparation:
-          'Coloque o leite condesado, a manteiga, e o chocolate. Misture até ferver',
-        additionalCostPercent: 5,
-        recipeIngredients: [
-          {
-            id: 1,
-            ingredientId: 1,
-            ingredientName: 'Leite Condensado',
-            quantity: 1,
-            unit: 'lata',
-            unitPriceSnapshot: 5,
-          },
-        ],
-        productServices: [
-          {
-            id: 1,
-            name: 'Uber',
-            description: 'Entrega',
-            providerName: 'Marcelo',
-            unit: 'Dinheiro',
-            unitPrice: 10,
-          },
-        ],
-      },
-    ],
-    productServices: [
-      {
-        id: 1,
-        name: 'Uber',
-        description: 'Entrega',
-        providerName: 'Marcelo',
-        unit: 'Dinheiro',
-        unitPrice: 10,
-      },
-    ],
-  },
-  {
-    productId: 2,
-    name: 'Bolo de Cenoura',
-    preparation: 'Misture a cenoura, ovo e farinha e leve ao forno.',
-    salePrice: 45.5,
-    profitPercent: 25,
-    productIngredients: [
-      {
-        id: 1,
-        ingredientId: 1,
-        ingredientName: 'Leite condesado',
-        quantity: 3,
-        unit: 'kilo',
-        unitPriceSnapshot: 5,
-      },
-    ],
-    productRecipes: [
-      {
-        id: 1,
-        recipeId: 1,
-        name: 'Brigadeiro Simples',
-        yieldQuantity: 20,
-        yieldUnit: 'unidades',
-        preparation:
-          'Coloque o leite condesado, a manteiga, e o chocolate. Misture até ferver',
-        additionalCostPercent: 5,
-        recipeIngredients: [
-          {
-            id: 1,
-            ingredientId: 1,
-            ingredientName: 'Leite Condensado',
-            quantity: 1,
-            unit: 'lata',
-            unitPriceSnapshot: 5,
-          },
-        ],
-      },
-    ],
-    productServices: [
-      {
-        id: 1,
-        name: 'Uber',
-        description: 'Entrega',
-        providerName: 'Marcelo',
-        unit: 'Dinheiro',
-        unitPrice: 10,
-      },
-    ],
-  },
-];
+import ProductCard from '@/components/CardsV2/ProductCard';
+import OrderCard from '@/components/CardsV2/OrderCard';
+import { theme } from '@/theme/theme';
+import { Icon } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getAbbreviationUnitType } from '@/pagesContent/registerItems/utils';
+import ServiceCard from '@/components/CardsV2/ServiceCard';
+import IngredientCard from '@/components/CardsV2/IngredientCard';
+import { router } from 'expo-router';
 
 const HomePage = () => {
-  const router = useRouter();
-  const handleNavigateToDetailsRecipe = (recipe: RecipeData) => {
-    const recipeDataString = JSON.stringify(recipe);
+  const [loading, setLoading] = useState(false);
+  const [savedServices, setSavedServices] = useState<IService[]>([]);
+  const [savedIngredients, setSavedIngredients] = useState<IIngredient[]>([]);
+  const [savedRecipes, setSavedRecipes] = useState<IRecipe[]>([]);
+  const [savedProducts, setSavedProducts] = useState<IProduct[]>([]);
+  const [savedOrders, setSavedOrders] = useState<IOrder[]>([]);
 
-    router.push({
-      pathname: '/DetailsRecipe',
-      params: {
-        recipeData: recipeDataString,
-      },
-    } as any);
+  const fetchAllData = async () => {
+    try {
+      setLoading(true);
+      const [serviceRes, ingredientRes, recipesRes, productsRes, ordersRes] =
+        await Promise.all([
+          epGetServices(),
+          epGetIngredients(),
+          epGetRecipes(),
+          epGetProducts(),
+          epGetOrders(),
+        ]);
+
+      setSavedServices(serviceRes);
+      setSavedIngredients(ingredientRes);
+      setSavedRecipes(recipesRes);
+      setSavedProducts(productsRes);
+      setSavedOrders(ordersRes);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleNavigateToDetailsProduct = (product: ProductData) => {
-    const recipeDataString = JSON.stringify(product);
-    router.push({
-      pathname: '/DetailsProduct',
-      params: {
-        recipeData: recipeDataString,
-      },
-    } as any);
-  };
-
-  const handleNavigateToDetailsOrder = (order: OrderData) => {
-    const orderDataString = JSON.stringify(order);
-    router.push({
-      pathname: '/DetailsOrder',
-      params: {
-        orderData: orderDataString,
-      },
-    } as any);
-  };
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+  const { bottom: bottomInset } = useSafeAreaInsets();
 
   return (
-    <ScrollView>
-      <ContainerListOFCards>
-        <View>
-          <ViewButtonTitle>
-            <Title>Receitas</Title>
+    <ScrollView style={{ width: '100%', paddingBottom: bottomInset + 70 }}>
+      <DinamicHeader></DinamicHeader>
+      {!loading ? (
+        <View style={{ padding: 20 }}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+            onPress={() => router.push('/seeMoreProducts')}
+          >
+            <H4 colorKey="darkBrown">Encomendas</H4>
+
+            <H6
+              colorKey="darkBrown"
+              style={{
+                textAlignVertical: 'bottom',
+                alignSelf: 'flex-end',
+              }}
+            >
+              Ver mais{' '}
+              <Icon
+                size={14}
+                source="chevron-right"
+                color={theme.colors.darkBrown}
+              ></Icon>
+            </H6>
+          </TouchableOpacity>
+          <ScrollView
+            horizontal
+            style={{ width: '100%' }}
+            contentContainerStyle={{ paddingVertical: 10 }}
+            showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled={true}
+          >
+            {savedOrders &&
+              savedOrders.length > 0 &&
+              savedOrders.map((orderData, index) => {
+                return (
+                  <OrderCard
+                    selectCardFunction={() =>
+                      router.push({
+                        pathname: '/detailsOrder',
+                        params: {
+                          recipeId: JSON.stringify(orderData.id),
+                        },
+                      })
+                    }
+                    orderData={orderData}
+                    key={index}
+                  ></OrderCard>
+                );
+              })}
+          </ScrollView>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
+            <H4 colorKey="darkBrown">Produtos</H4>
             <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'flex-end',
+              }}
+              onPress={() => router.push('/seeMoreProducts')}
+            >
+              <H6 colorKey="darkBrown">Ver mais</H6>
+              <Icon
+                size={20}
+                source="chevron-right"
+                color={theme.colors.darkBrown}
+              ></Icon>
+            </TouchableOpacity>
+          </View>
+          <ScrollView
+            style={{ width: '100%' }}
+            horizontal
+            contentContainerStyle={{ paddingVertical: 10 }}
+            showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled={true}
+          >
+            {savedProducts &&
+              savedProducts.length > 0 &&
+              savedProducts.map((productData, index) => (
+                <ProductCard
+                  selectCardFunction={() =>
+                    router.push({
+                      pathname: '/detailsProduct',
+                      params: {
+                        recipeId: JSON.stringify(productData.id),
+                      },
+                    })
+                  }
+                  productData={productData}
+                  key={index}
+                ></ProductCard>
+              ))}
+          </ScrollView>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
+            <H4 colorKey="darkBrown">Receitas</H4>
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'flex-end',
+              }}
               onPress={() => router.push('/seeMoreRecipes')}
-              style={{ margin: 10 }}
             >
-              {' '}
-              Ver mais{' '}
+              <H6 colorKey="darkBrown">Ver mais</H6>
+              <Icon
+                size={20}
+                source="chevron-right"
+                color={theme.colors.darkBrown}
+              />
             </TouchableOpacity>
-          </ViewButtonTitle>
+          </View>
           <ScrollView
-            horizontal={true}
+            style={{ width: '100%' }}
+            horizontal
+            contentContainerStyle={{ paddingVertical: 10 }}
             showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled={true}
           >
-            <ListRecipes
-              onCardPress={handleNavigateToDetailsRecipe}
-              dataRecipe={mockRecipes}
+            {savedRecipes &&
+              savedRecipes.length > 0 &&
+              savedRecipes.map((recipeData, index) => {
+                return (
+                  <RecipeCard
+                    selectCardFunction={() =>
+                      router.push({
+                        pathname: '/detailsRecipe',
+                        params: {
+                          recipeId: JSON.stringify(recipeData.id),
+                        },
+                      })
+                    }
+                    recipeData={recipeData}
+                    key={index}
+                  ></RecipeCard>
+                );
+              })}
+          </ScrollView>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
+            <H4 colorKey="darkBrown">Ingredientes</H4>
+            <View
               style={{
                 flexDirection: 'row',
-                margin: 10,
+                alignSelf: 'flex-end',
               }}
-              cardItemStyle={{}}
-            />
-          </ScrollView>
-        </View>
-
-        <View>
-          <ViewButtonTitle>
-            <Title>Produtos</Title>
-            <TouchableOpacity
-              onPress={() => router.push('/(tabs)/seeMoreProducts')}
-              style={{ margin: 10 }}
             >
-              {' '}
-              Ver mais{' '}
-            </TouchableOpacity>
-          </ViewButtonTitle>
-
+              <H6 colorKey="darkBrown">Ver mais</H6>
+              <Icon
+                size={20}
+                source="chevron-right"
+                color={theme.colors.darkBrown}
+              ></Icon>
+            </View>
+          </View>
           <ScrollView
-            horizontal={true}
+            style={{ width: '100%' }}
+            horizontal
+            contentContainerStyle={{ paddingVertical: 10 }}
             showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled={true}
           >
-            <ListProducts
-              onCardPress={handleNavigateToDetailsProduct}
-              dataProduct={mockProducts}
+            {savedIngredients &&
+              savedIngredients.length > 0 &&
+              savedIngredients.map((ingredientData, index) => {
+                return (
+                  <IngredientCard
+                    ingredientData={ingredientData}
+                    key={index}
+                  ></IngredientCard>
+                );
+              })}
+          </ScrollView>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+            }}
+          >
+            <H4 colorKey="darkBrown">Serviços</H4>
+            <View
               style={{
                 flexDirection: 'row',
-                margin: 10,
+                alignSelf: 'flex-end',
               }}
-              cardItemStyle={{}}
-            ></ListProducts>
-          </ScrollView>
-        </View>
-
-        <View>
-          <ViewButtonTitle>
-            <Title> Encomendas</Title>
-            <TouchableOpacity
-              onPress={() => router.push('/seeMoreOrders')}
-              style={{ margin: 10 }}
             >
-              {' '}
-              Ver mais{' '}
-            </TouchableOpacity>
-          </ViewButtonTitle>
-
+              <H6 colorKey="darkBrown">Ver mais</H6>
+              <Icon
+                size={20}
+                source="chevron-right"
+                color={theme.colors.darkBrown}
+              ></Icon>
+            </View>
+          </View>
           <ScrollView
-            horizontal={true}
+            style={{ width: '100%' }}
+            horizontal
+            contentContainerStyle={{ paddingVertical: 10 }}
             showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled={true}
           >
-            <ListOrders
-              onCardPress={handleNavigateToDetailsOrder}
-              data={mockOrders}
-              style={{
-                flexDirection: 'row',
-                margin: 10,
-              }}
-              cardItemStyle={{}}
-            ></ListOrders>
+            {savedServices &&
+              savedServices.length > 0 &&
+              savedServices.map((serviceData, index) => {
+                return (
+                  <ServiceCard
+                    serviceData={serviceData}
+                    key={index}
+                  />
+                );
+              })}
           </ScrollView>
         </View>
-      </ContainerListOFCards>
+      ) : (
+        <ActivityIndicator
+          size="large"
+          color={theme.colors.pinkRed}
+          style={{ height: '100%' }}
+        >
+          <H4>Estamos carregando suas informações</H4>
+        </ActivityIndicator>
+      )}
+
+      <MenuComponent></MenuComponent>
     </ScrollView>
   );
 };

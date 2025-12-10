@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { secondaryTheme } from '../../../theme/theme';
 import { QuantityInputsContainer } from '../styles';
-import { fetchRegisterIngredients } from '../../../api/register/registerItem';
+import { epPostIngredient } from '../../../api/register/registerItem';
 import {
   UnitTypeEnum,
   ingredientRegisterUnitOptions,
@@ -35,7 +35,7 @@ const RegisterIngredientsComponent = ({ type }: PageProps) => {
   const handleRegisterIngredients = async () => {
     try {
       setLoading(true);
-      await fetchRegisterIngredients({
+      await epPostIngredient({
         name,
         description,
         brand,
