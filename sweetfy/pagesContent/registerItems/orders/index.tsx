@@ -22,11 +22,8 @@ import {
 import SelectedItemList from '@/components/SelectedItemsList';
 import { H5, H6_medium } from '@/theme/fontsTheme';
 import { ActivityIndicator } from 'react-native';
-interface PageProps {
-  type: pageType;
-}
 
-const RegisterOrdersComponent = ({ type }: PageProps) => {
+const RegisterOrdersComponent = () => {
   const { pageMode, id } = useLocalSearchParams();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

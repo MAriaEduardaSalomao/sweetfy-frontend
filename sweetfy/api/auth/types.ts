@@ -10,3 +10,8 @@ export interface IRequestRegister {
   password: string;
   bakeryName: string;
 }
+
+export interface IAuth{
+  token: string,
+  refreshToken: string,
+}

@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 export const setStorageItem = async (key: string, value: string) => {
+  console.log(`💾 [STORAGE] Salvando ${key} no LocalStorage...`); // LOG DE DEBUG
     if (Platform.OS === 'web') {
       try {
         localStorage.setItem(key, value);

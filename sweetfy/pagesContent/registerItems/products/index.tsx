@@ -17,7 +17,7 @@ import {
   epGetIngredients,
   epGetRecipes,
   epGetProducts,
-  epPostProducts,
+  epPostProduct,
   epGetServices,
 } from '../../../api/register/registerItem';
 import {
@@ -326,7 +326,7 @@ const RegisterProductComponent = () => {
   const postProductItem = async () => {
     try {
       setLoading(true);
-      await epPostProducts({
+      await epPostProduct({
         name,
         preparation,
         salePrice: pricingData.salePrice,
@@ -381,7 +381,7 @@ const RegisterProductComponent = () => {
         router.push('/home');
       }}
     >
-      {loading ? ( // [ALTERADO] Adicionei um loading visual para evitar tela branca durante fetch
+      {loading ? (
         <ActivityIndicator size="large" />
       ) : (
         <>

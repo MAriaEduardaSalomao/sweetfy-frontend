@@ -1,6 +1,6 @@
 import { UnitTypeEnum } from "../../pagesContent/registerItems/types"
 
-export interface IRegisterIngredientsRequest{
+export interface IIngredientsRequest{
   name: string,
   description: string,
   brand: string,
@@ -9,7 +9,7 @@ export interface IRegisterIngredientsRequest{
   unitPrice: number
 }
 
-export interface IRegisterServiceRequest{
+export interface IServiceRequest{
   name: string,
   description: string,
   providerName: string,
@@ -17,49 +17,7 @@ export interface IRegisterServiceRequest{
   unitPrice: number
 }
 
-export interface includedIngredients{
-  ingredientId: number,
-  quantity: number,
-  unit: UnitTypeEnum
-}
-
-interface includedIngredientDetails{
-  id: number,
-  ingredientId: number,
-  ingredientName: string,
-  quantity: number,
-  unit: UnitTypeEnum,
-  unitPriceSnapshot: number
-}
-
-interface includedServices{
-  serviceId: number,
-  quantity: number,
-}
-
-interface includedServiceDetails{
-  id: number,
-  serviceId: number,
-  serviceName: string,
-  quantity: number,
-  unitPriceSnapshot: number,
-  unit: UnitTypeEnum;
-}
-
-interface includedRecipes{
-  recipeId: number,
-  quantity: number,
-}
-
-interface includedRecipeDetails{
-  id: number,
-  recipeId: number,
-  recipeName: string,
-  quantity: number,
-  unitPriceSnapshot: number
-}
-
-export interface IRegisterRecipeRequest{
+export interface IRecipeRequest{
   name: string,
   yieldQuantity: number,
   yieldUnit: UnitTypeEnum,
@@ -69,7 +27,7 @@ export interface IRegisterRecipeRequest{
   recipeServices?:includedServices[],
 }
 
-export interface IPostProductRequest{
+export interface IProductRequest{
   name: string,
   preparation: string,
   salePrice: number,
@@ -78,20 +36,8 @@ export interface IPostProductRequest{
   productServices?:includedServices[],
   productRecipes?:includedRecipes[],
 }
-interface includedProducts{
-  productId: number,
-  quantity: number,
-}
 
-interface includedProductDetails{
-   id: number,
-  productId: number,
-  productName: string,
-  quantity: number,
-  unitPriceSnapshot: number,
-  costSnapshot: number
-}
-export interface IPostOrderRequest{
+export interface IOrderRequest{
   name: string,
   description: string,
   status: string,
@@ -175,4 +121,63 @@ export interface IRecipeDetails{
     updatedAt: Date,
     recipeIngredients: includedIngredientDetails[],
     recipeServices: includedServiceDetails[]
+}
+
+export interface IBulkUpdatePrices{
+  id: number,
+  newPrice: number
+}
+
+export interface includedIngredients{
+  ingredientId: number,
+  quantity: number,
+  unit: UnitTypeEnum
+}
+
+interface includedIngredientDetails{
+  id: number,
+  ingredientId: number,
+  ingredientName: string,
+  quantity: number,
+  unit: UnitTypeEnum,
+  unitPriceSnapshot: number
+}
+
+interface includedServices{
+  serviceId: number,
+  quantity: number,
+}
+interface includedRecipes{
+  recipeId: number,
+  quantity: number,
+}
+
+interface includedProducts{
+  productId: number,
+  quantity: number,
+}
+
+interface includedRecipeDetails{
+  id: number,
+  recipeId: number,
+  recipeName: string,
+  quantity: number,
+  unitPriceSnapshot: number
+}
+interface includedServiceDetails{
+  id: number,
+  serviceId: number,
+  serviceName: string,
+  quantity: number,
+  unitPriceSnapshot: number,
+  unit: UnitTypeEnum;
+}
+
+interface includedProductDetails{
+   id: number,
+  productId: number,
+  productName: string,
+  quantity: number,
+  unitPriceSnapshot: number,
+  costSnapshot: number
 }

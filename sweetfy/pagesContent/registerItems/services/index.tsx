@@ -62,7 +62,6 @@ const RegisterServicesComponent = ({ type }: PageProps) => {
 
   return (
     <ItensRegisterTemplate
-      type={type}
       registerItemName="Novo serviço"
       showSnackbar={showResponseStatus}
       snackbarType={responseStatusMessage}

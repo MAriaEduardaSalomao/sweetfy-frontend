@@ -4,7 +4,6 @@ import InputItens from '@/components/Inputs';
 import { primaryTheme, theme } from '../../theme/theme';
 import { useState } from 'react';
 import { ActivityIndicator } from 'react-native-paper';
-import { useAuth } from '../../context/AuthContext';
 import { router } from 'expo-router';
 import { fetchLogin } from '../../api/auth/auth';
 import AuthTemplate from '@/components/Templates/auth';
@@ -12,6 +11,9 @@ import DinamicSnackbar, {
   DinamicSnackbarType,
 } from '@/components/DinamicSnackbar';
 import { InputsContent } from '@/components/Templates/styles';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store';
+import { loginUser } from '@/store/actions';
 
 const LoginPageComponent = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +24,7 @@ const LoginPageComponent = () => {
   const [responseStatusMessage, setResponseStatusMessage] =
     useState<DinamicSnackbarType>('error');
 
-  const { signIn } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleLogin = async () => {
     try {
@@ -31,7 +33,12 @@ const LoginPageComponent = () => {
       setLoading(true);
       const response = await fetchLogin({ email, password });
       setResponseStatusMessage('success');
-      signIn(response.accessToken);
+      await dispatch(
+        loginUser({
+          token: response.accessToken,
+          refreshToken: response.refreshToken || '',
+        })
+      );
     } catch (e) {
       console.error(e);
       setResponseStatusMessage('error');

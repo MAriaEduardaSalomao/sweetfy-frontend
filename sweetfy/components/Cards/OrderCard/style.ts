@@ -29,7 +29,7 @@ export const ViewPrice = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10;
+  gap: 10px;
   padding: 5px;
 `;
 
