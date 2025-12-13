@@ -55,6 +55,6 @@ export const PropsContainer = styled.View`
   width: 100%;
   margin-top: 10;
   align-items: center;
-  gap: 25;
+  gap: 25px;
   justify-content: center;
 `;

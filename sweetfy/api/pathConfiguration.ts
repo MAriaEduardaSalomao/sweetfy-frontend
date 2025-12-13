@@ -1,6 +1,8 @@
 import axios from 'axios';
-import { getStorageItem, removeStorageItem, setStorageItem } from '../context/utils';
-import { router } from 'expo-router';
+import { store } from '@/store';
+import { setSession, } from '@/store/authSlice';
+import { logoutUser } from '@/store/actions';
+import { getStorageItem, setStorageItem } from '@/utils';
 
 export const API_URL = 'https://petrous-lilli-manfully.ngrok-free.dev';
 const api = axios.create({
@@ -29,7 +31,6 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-
     if (originalRequest.url.includes('/login') || originalRequest.url.includes('/register')) {
        return Promise.reject(error);
     }
@@ -43,23 +44,30 @@ api.interceptors.response.use(
         if (!currentAccessToken || !currentRefreshToken) {
             throw new Error("Tokens não encontrados no storage");
         }
+        
         const response = await axios.post(`${API_URL}/api/Auth/refresh-token`, { 
             accessToken: currentAccessToken,
             refreshToken: currentRefreshToken
         });
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
 
-        const { credentials: newToken } = response.data;
+        if (newAccessToken) {
+          await setStorageItem('token', newAccessToken);
+          
+          if (newRefreshToken) {
+            await setStorageItem('refreshToken', newRefreshToken);
+          }
+          
+          store.dispatch(setSession(newAccessToken)); 
 
-        if (newToken) {
-          setStorageItem('token', newToken)
-          originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return api(originalRequest);
+        }else {
+            throw new Error("Token não veio na resposta");
         }
-
       } catch (refreshError) {
-        console.error("Falha ao renovar token. Sessão expirada.");
-        removeStorageItem('token');
-        router.push('/login');
+        console.error("Falha ao renovar token. Sessão expirada.", refreshError);
+        store.dispatch(logoutUser());
         return Promise.reject(refreshError);
       }
     }

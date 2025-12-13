@@ -15,11 +15,7 @@ import InputItens from '@/components/Inputs';
 import SpecificFormatInput from '@/components/Inputs/SpecificFormatInput';
 import ItensRegisterTemplate from '@/components/Templates/itensRegister';
 
-interface PageProps {
-  type: pageType;
-}
-
-const RegisterIngredientsComponent = ({ type }: PageProps) => {
+const RegisterIngredientsComponent = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [brand, setBrand] = useState('');
@@ -67,7 +63,6 @@ const RegisterIngredientsComponent = ({ type }: PageProps) => {
 
   return (
     <ItensRegisterTemplate
-      type={type}
       registerItemName="Novo ingrediente"
       showSnackbar={showResponseStatus}
       snackbarType={responseStatusMessage}

@@ -5,7 +5,7 @@ import styled from "styled-components/native";
 export const Container = styled(Surface)`
     flex: 1;
     backgroundColor: ${theme.colors.darkBrown};
-    paddingBottom: 12;
+    padding-bottom: 12px;
 `
 
 export const ContentContainer = styled.ScrollView.attrs({
@@ -24,13 +24,13 @@ export const MainText = styled.View`
     display: flex;
     alignItems: center;
     justifyContent: center;
-    gap: 24;
-    paddingVertical: 24;
+    gap: 24px;
+    paddingVertical: 24px;
     max-width: 85%;
 `
 
 export const InputsContent= styled.View`
     width: 80%;
-    gap: 24;
-    marginBottom: 32;
+    gap: 24px;
+    marginBottom: 32px;
 `
