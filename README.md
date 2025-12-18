@@ -6,5 +6,7 @@ O repositório terá a *main* como branch principal e oficial.
 Para inicialização do projeto, é necessário rodar os seguintes comandos:
 
 > npm install
+> 
 > npx expo start --tunnel
+> 
 > npm run tunnel
