@@ -258,7 +258,7 @@ const RegisterOrdersComponent = () => {
 
           {estimatedBaseCost > 0 && (
             <H5 style={{ marginVertical: 8 }}>
-              Custo estimado:{' '}
+              Custo estimado:
               <H6_medium
                 style={{
                   backgroundColor: theme.colors.rippleColor,

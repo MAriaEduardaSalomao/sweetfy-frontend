@@ -83,7 +83,7 @@ const PricingComponent = ({
             <P style={{ width: '12%', left: 10 }}>Ação</P>
             <H6_medium style={{ width: '25%', textAlign: 'center' }}>
               %Lucro
-            </H6_medium>{' '}
+            </H6_medium>
           </TableHeader>
           {profitOptions.map((profitOption, key) => (
             <PricingRow

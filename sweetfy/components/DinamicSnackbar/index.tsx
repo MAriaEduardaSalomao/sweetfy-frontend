@@ -28,7 +28,6 @@ const DinamicSnackbar = ({
           {type === 'success' ? 'Sucesso :)' : 'Algo deu errado :('}
         </H5>
         <H6 colorKey="brown">
-          {' '}
           {type === 'success'
             ? 'Tudo certo!'
             : 'Confira os dados inseridos e tente novamente!'}

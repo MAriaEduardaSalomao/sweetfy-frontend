@@ -30,7 +30,7 @@ export const ViewContainer = styled.View`
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: ${theme.colors.lightBrown};
   padding: 20px;
   gap: 20px;
+  margin: 20px;
 `;

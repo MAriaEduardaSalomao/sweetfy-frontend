@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { secondaryTheme } from '../../../theme/theme';
+import { secondaryTheme, theme } from '../../../theme/theme';
 import { QuantityInputsContainer } from '../styles';
 import {
   epGetIngredients,
@@ -238,10 +238,9 @@ const RegisterRecipesComponent = () => {
       }}
     >
       {loading ? (
-        <ActivityIndicator size="large"></ActivityIndicator>
+        <ActivityIndicator size="large" />
       ) : (
         <>
-          {' '}
           <InputItens
             title="Nome da receita"
             placeholder="ex.: Massa de brigadeiro, Massa de bolo de chocolate..."
@@ -261,7 +260,7 @@ const RegisterRecipesComponent = () => {
               onChangeText={setYieldQuantity}
               value={yieldQuantity}
               theme={secondaryTheme}
-              containerStyle={{ flex: 1 }}
+              containerStyle={{ maxWidth: '50%' }}
               keyboardType="number-pad"
               requiredField
               outlinedInput
@@ -285,11 +284,11 @@ const RegisterRecipesComponent = () => {
             keyboardType="default"
             outlinedInput
             multiline
-            style={{ minHeight: 60 }}
+            style={{ minHeight: 60, padding: 10 }}
           />
           <SpecificFormatInput
             onChangeValue={setAdditionalCostPercent}
-            value={Number(additionalCostPercent)}
+            value={additionalCostPercent || 0}
             placeholder="ex.: 20%, 34.5%..."
             title="Custos incalculáveis"
             type="percentage"

@@ -32,6 +32,8 @@ const DropdownInput = ({
   setSelectedOptions,
 }: IDropdownProps) => {
   const [showDropDownOptions, setShowDropDownOptions] = useState(false);
+  const placeholderColor = (theme.colors as any)?.onSurfaceVariant + '80';
+
   return (
     <Container
       style={{ flex: 1 }}
@@ -46,6 +48,10 @@ const DropdownInput = ({
       <DropDownPicker
         multiple={multipleSelection}
         mode="BADGE"
+        listMode="SCROLLVIEW"
+        scrollViewProps={{
+          nestedScrollEnabled: true,
+        }}
         open={showDropDownOptions}
         value={selectedOptions}
         items={options}
@@ -75,8 +81,7 @@ const DropdownInput = ({
         labelStyle={{ color: theme.colors.inputWhite }}
         textStyle={{ ...theme.typography.h6_body }}
         placeholderStyle={{
-          color: theme.colors.yellow,
-          opacity: '60%',
+          color: theme.colors.yellow + '80',
         }}
         ArrowDownIconComponent={() => {
           return (

@@ -1,9 +1,4 @@
-import {
-  TouchableOpacity,
-  ScrollView,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import { ScrollView, View, ActivityIndicator } from 'react-native';
 
 import React, { useEffect, useState } from 'react';
 
@@ -91,7 +86,7 @@ const HomePage = () => {
             contentContainerStyle={{ padding: 20 }}
             showsVerticalScrollIndicator={false}
           >
-            <ItemsContainer onPress={() => router.push('/seeMoreProducts')}>
+            <ItemsContainer onPress={() => router.push('/seeMoreOrders')}>
               <H4 colorKey="darkBrown">Encomendas</H4>
               <H6
                 colorKey="darkBrown"
@@ -197,7 +192,7 @@ const HomePage = () => {
               {savedIngredients && IngredientList(savedIngredients)}
             </ScrollView>
 
-            <ItemsContainer>
+            <ItemsContainer onPress={() => router.push('/seeMoreServices')}>
               <H4 colorKey="darkBrown">Serviços</H4>
               <H6
                 colorKey="darkBrown"

@@ -86,9 +86,8 @@ const SeeMoreRecipes = () => {
 
         <View
           style={{
-            backgroundColor: theme.colors.lightBrown,
             flexDirection: 'column',
-            gap: 10,
+            gap: 20,
             padding: 10,
           }}
         >
@@ -124,7 +123,7 @@ const SeeMoreRecipes = () => {
             />
           </View>
         </View>
-        <View style={{ padding: 10 }}>
+        <View style={{ padding: 10, alignItems: 'center' }}>
           {recipes.map((recipe, index) => (
             <View
               key={index}

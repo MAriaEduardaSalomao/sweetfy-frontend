@@ -42,6 +42,11 @@ const typography= {
             fontWeight: fontWeight.semi,
             fontFamily: fontFamily,
         },
+        h4_subtitle_bold: {
+            fontSize: fontSize.h4_subtitle,
+            fontWeight: fontWeight.bold,
+            fontFamily: fontFamily,
+        },
         h5_bodyLarge: {
             fontSize: fontSize.h5_bodyLarge,
             fontWeight: fontWeight.semi,

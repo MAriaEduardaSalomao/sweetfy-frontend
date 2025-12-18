@@ -1,9 +1,14 @@
 import { IOrder } from '@/api/register/types';
-import { ContainerCardOrder } from '@/components/Cards/OrderCard/style';
 import { H5, Label, P, P_medium, P_semi } from '@/theme/fontsTheme';
 import { theme } from '@/theme/theme';
-import { View } from 'react-native';
 import { Icon } from 'react-native-paper';
+import {
+  ContainerCardOrder,
+  FieldLine,
+  IconWithText,
+  TagsContainer,
+  TitleContainer,
+} from '../styles';
 
 interface IOrderCard {
   orderData: IOrder;
@@ -16,28 +21,15 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
       onPress={selectCardFunction}
       isSelected={selected}
     >
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flex: 1,
-        }}
-      >
-        <H5 colorKey="darkBrown">{orderData.name} </H5>
-        <View
-          style={{
-            backgroundColor: theme.colors.green,
-            padding: 5,
-            borderRadius: 6,
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginLeft: 'auto',
-            gap: 5,
-          }}
+      <TitleContainer>
+        <H5
+          colorKey="darkBrown"
+          style={{ maxWidth: '45%' }}
+          numberOfLines={2}
         >
+          {orderData.name}
+        </H5>
+        <IconWithText>
           <Icon
             size={12}
             color={theme.colors.white}
@@ -46,17 +38,10 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
           <Label colorKey="white">
             {((orderData.profit / orderData.totalCost) * 100).toFixed(2)}%
           </Label>
-        </View>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+        </IconWithText>
+      </TitleContainer>
+
+      <FieldLine>
         <P_semi
           colorKey="darkBrown"
           style={{ maxWidth: '45%' }}
@@ -64,16 +49,8 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
           Rendimento total
         </P_semi>
         <P colorKey="darkBrown">{orderData.totalYield} unid.(s)</P>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      </FieldLine>
+      <FieldLine>
         <P_semi
           colorKey="darkBrown"
           style={{ maxWidth: '45%' }}
@@ -81,16 +58,8 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
           Preço de venda
         </P_semi>
         <P colorKey="darkBrown">R$ {orderData.salePrice}</P>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      </FieldLine>
+      <FieldLine>
         <P_medium
           colorKey="red"
           style={{ maxWidth: '45%' }}
@@ -98,16 +67,8 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
           Custo total
         </P_medium>
         <P colorKey="red">R$ {orderData.totalCost}</P>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      </FieldLine>
+      <FieldLine>
         <P_medium
           colorKey="green"
           style={{ maxWidth: '45%' }}
@@ -115,17 +76,9 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
           Lucro total
         </P_medium>
         <P colorKey="green">R$ {orderData.profit}</P>
-      </View>
+      </FieldLine>
 
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 5,
-          flexWrap: 'wrap',
-        }}
-      >
+      <TagsContainer>
         {orderData.orderProducts.length > 0 &&
           orderData.orderProducts.map((orderProduct, index) => (
             <Label
@@ -141,7 +94,7 @@ const OrderCard = ({ orderData, selected, selectCardFunction }: IOrderCard) => {
               {orderProduct.quantity} x {orderProduct.productName}
             </Label>
           ))}
-      </View>
+      </TagsContainer>
     </ContainerCardOrder>
   );
 };

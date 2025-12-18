@@ -38,6 +38,11 @@ export const H4 = styled(Text)<StyledTextProps>`
 ${theme.typography.h4_subtitle}
 color: ${getTextColor};
 `;
+export const H4_bold = styled(Text)<StyledTextProps>`
+
+${theme.typography.h4_subtitle_bold}
+color: ${getTextColor};
+`;
 
 export const H5 = styled(Text)<StyledTextProps>`
 ${theme.typography.h5_bodyLarge}
