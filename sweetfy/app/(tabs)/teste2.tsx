@@ -273,7 +273,6 @@ const MyComponent = () => {
                 flex: 1,
               }}
             >
-              {' '}
               <H6_bold colorKey="darkBrown">Nome</H6_bold>
             </DataTable.Title>
             <DataTable.Title

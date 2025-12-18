@@ -11,7 +11,7 @@ import {
   epGetRecipeDetails,
 } from '@/api/register/registerItem';
 import { getAbbreviationUnitType } from '@/pagesContent/registerItems/utils';
-import { H4, H5, H6, H6_medium, P } from '@/theme/fontsTheme';
+import { H4, H4_bold, H5, H6, H6_medium, P } from '@/theme/fontsTheme';
 import { theme } from '@/theme/theme';
 import DinamicHeader from '@/components/PageTips/DinamicHeader';
 import { IconsContainer } from '@/pagesContent/registerItems/styles';
@@ -54,11 +54,19 @@ const PageDetailsRecipe = () => {
         <ActivityIndicator size="large"></ActivityIndicator>
       ) : (
         <>
-          <ViewContainer style={{}}>
+          <ViewContainer>
             <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}
             >
-              <H4 colorKey="darkBrown">{recipeDetails.name} </H4>
+              <H4_bold
+                colorKey="darkBrown"
+                style={{ alignSelf: 'center', maxWidth: '60%' }}
+              >
+                {recipeDetails.name}
+              </H4_bold>
               <IconsContainer>
                 <IconButton
                   icon={require('../../../assets/icons/edit.png')}

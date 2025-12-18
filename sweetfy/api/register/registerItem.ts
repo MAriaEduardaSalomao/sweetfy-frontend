@@ -73,7 +73,8 @@ export async function epGetRecipes():Promise<IRecipe[]>{
 }
 
 export async function epGetRecipeDetails(id:number) {
-  await api.get(`/recipes/${id}`)
+  const response = await api.get(`/recipes/${id}`)
+  return response.data;
 }
 
 export async function epDeleteRecipe(id: number){

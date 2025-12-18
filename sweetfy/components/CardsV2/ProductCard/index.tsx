@@ -1,12 +1,17 @@
 import { IProduct } from '@/api/register/types';
-import {
-  ContainerCardProduct,
-  ContainerPrice,
-} from '@/components/Cards/ProductCard/style';
+
 import { P_semi, P_medium, Label, H5 } from '@/theme/fontsTheme';
 import { theme } from '@/theme/theme';
 import { View } from 'react-native';
 import { Icon } from 'react-native-paper';
+import {
+  ContainerCardProduct,
+  ContainerPrice,
+  FieldLine,
+  IconText,
+  TagsContainer,
+  TitleContainer,
+} from '../styles';
 
 interface IProductCard {
   productData: IProduct;
@@ -25,15 +30,7 @@ const ProductCard = ({
       isSelected={selected}
     >
       <H5 colorKey="darkBrown">{productData.name}</H5>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <FieldLine>
         <P_semi
           colorKey="darkBrown"
           style={{ maxWidth: '45%' }}
@@ -44,19 +41,11 @@ const ProductCard = ({
           {productData.productRecipes.reduce(
             (acc, item) => acc + item.quantity,
             0
-          )}{' '}
+          )}
           unid.(s)
         </P_medium>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      </FieldLine>
+      <FieldLine>
         <P_semi
           colorKey="darkBrown"
           style={{ maxWidth: '45%' }}
@@ -65,19 +54,19 @@ const ProductCard = ({
         </P_semi>
 
         <P_medium colorKey="darkBrown">R${productData.salePrice}</P_medium>
-      </View>
+      </FieldLine>
 
       <ContainerPrice>
-        <View style={{ flexDirection: 'row', gap: 2 }}>
+        <IconText>
           <Icon
             source="arrow-down-circle"
             size={12}
             color={theme.colors.red}
           />
           <Label colorKey="red">R${productData.baseCost}</Label>
-        </View>
+        </IconText>
 
-        <View style={{ flexDirection: 'row', gap: 2 }}>
+        <IconText>
           <Icon
             source="arrow-up-circle"
             size={12}
@@ -85,17 +74,9 @@ const ProductCard = ({
           />
           <Label colorKey="green">R${productData.profitAmount}</Label>
           <Label colorKey="green">({productData.profitPercent}%)</Label>
-        </View>
+        </IconText>
       </ContainerPrice>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 5,
-          flexWrap: 'wrap',
-        }}
-      >
+      <TagsContainer>
         {productData.productRecipes.length > 0 &&
           productData.productRecipes.map((productRecipe, index) => (
             <Label
@@ -111,7 +92,7 @@ const ProductCard = ({
               {productRecipe.recipeName}
             </Label>
           ))}
-      </View>
+      </TagsContainer>
     </ContainerCardProduct>
   );
 };

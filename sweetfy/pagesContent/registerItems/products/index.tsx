@@ -385,7 +385,6 @@ const RegisterProductComponent = () => {
         <ActivityIndicator size="large" />
       ) : (
         <>
-          {' '}
           <InputItens
             title="Nome do produto"
             placeholder="ex.: Cento de brigadeiro, Bolo de chocolate..."
@@ -407,7 +406,7 @@ const RegisterProductComponent = () => {
             keyboardType="default"
             outlinedInput
             multiline
-            style={{ minHeight: 60 }}
+            style={{ minHeight: 60, padding: 10 }}
           />
           <View
             style={{

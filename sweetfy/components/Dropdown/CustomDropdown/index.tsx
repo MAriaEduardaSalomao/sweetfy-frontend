@@ -73,6 +73,10 @@ const CustomDropdownInput = ({
       )}
       <DropDownPicker
         multiple
+        listMode="SCROLLVIEW"
+        scrollViewProps={{
+          nestedScrollEnabled: true,
+        }}
         open={showDropDownOptions}
         value={selectedItemsIds}
         multipleText="Selecionando..."
@@ -114,8 +118,7 @@ const CustomDropdownInput = ({
         selectedItemContainerStyle={{ backgroundColor: theme.colors.white }}
         labelStyle={{ color: theme.colors.inputWhite }}
         placeholderStyle={{
-          color: theme.colors.yellow,
-          opacity: '60%',
+          color: theme.colors.yellow + '80',
         }}
         ArrowDownIconComponent={() => {
           return (

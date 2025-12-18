@@ -4,6 +4,7 @@ import { getAbbreviationUnitType } from '@/pagesContent/registerItems/utils';
 import { H5, Label, P_medium, P_semi } from '@/theme/fontsTheme';
 import { theme } from '@/theme/theme';
 import { View } from 'react-native';
+import { ContainerCardRecipe, FieldLine, TagsContainer } from '../styles';
 
 interface IRecipeData {
   recipeData: IRecipe;
@@ -17,20 +18,12 @@ const RecipeCard = ({
   selected,
 }: IRecipeData) => {
   return (
-    <ContainerCard
+    <ContainerCardRecipe
       onPress={selectCardFunction}
       isSelected={selected}
     >
       <H5 colorKey="darkBrown">{recipeData.name}</H5>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+      <FieldLine>
         <P_semi
           colorKey="darkBrown"
           style={{ maxWidth: '45%' }}
@@ -38,25 +31,18 @@ const RecipeCard = ({
           Rendimento total
         </P_semi>
         <P_medium colorKey="darkBrown">
-          {recipeData.yieldQuantity}{' '}
+          {recipeData.yieldQuantity}
           {getAbbreviationUnitType(recipeData.yieldUnit.toString())}
         </P_medium>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
+      </FieldLine>
+      <FieldLine>
         <P_semi colorKey="darkBrown">Custos incalculáveis</P_semi>
         <P_medium colorKey="darkBrown">
-          {recipeData.yieldQuantity}{' '}
+          {recipeData.yieldQuantity}
           {getAbbreviationUnitType(recipeData.additionalCostPercent.toString())}
           %
         </P_medium>
-      </View>
+      </FieldLine>
       <View
         style={{
           width: '100%',
@@ -70,15 +56,7 @@ const RecipeCard = ({
           R$ {(recipeData.yieldQuantity * recipeData.baseCost).toFixed(2)}
         </P_medium>
       </View>
-      <View
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 5,
-          flexWrap: 'wrap',
-        }}
-      >
+      <TagsContainer>
         {recipeData.recipeIngredients &&
           recipeData.recipeIngredients.length > 0 &&
           recipeData.recipeIngredients.map((ingredient, key) => (
@@ -94,8 +72,8 @@ const RecipeCard = ({
               {ingredient.ingredientName}
             </Label>
           ))}
-      </View>
-    </ContainerCard>
+      </TagsContainer>
+    </ContainerCardRecipe>
   );
 };
 

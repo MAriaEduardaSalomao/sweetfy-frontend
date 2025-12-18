@@ -18,6 +18,10 @@ const TemplateComponent = ({
   const [showDropDownOptions, setShowDropDownOptions] = useState(false);
   return (
     <DropDownPicker
+      listMode="SCROLLVIEW"
+      scrollViewProps={{
+        nestedScrollEnabled: true,
+      }}
       open={showDropDownOptions}
       value={selectedOption}
       items={options}

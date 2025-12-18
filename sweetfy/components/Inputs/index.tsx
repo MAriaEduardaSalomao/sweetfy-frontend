@@ -74,7 +74,10 @@ const InputItens = ({
   return (
     <Container style={containerStyle}>
       {title && (
-        <H5 colorKey={titleColor || 'white'}>
+        <H5
+          colorKey={titleColor || 'white'}
+          style={{ maxWidth: '90%' }}
+        >
           {title}
           {requiredField && ' *'}
         </H5>

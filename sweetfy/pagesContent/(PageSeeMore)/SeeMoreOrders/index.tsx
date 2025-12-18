@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { OrderData } from '@/components/Cards/OrderCard';
 
 import DinamicButton from '@/components/Buttons';
 import ListOrders from '@/components/ListOfCards/ListOrders';
@@ -80,7 +79,7 @@ const SeeMoreOrders = () => {
 
   const router = useRouter();
 
-  const handleNavigateToDetailsOrder = (order: OrderData) => {
+  const handleNavigateToDetailsOrder = (order: IOrder) => {
     const orderDataString = JSON.stringify(order);
     router.push({
       pathname: '/DetailsOrder',

@@ -6,7 +6,7 @@ import {
   IService,
 } from '@/api/register/types';
 import OrderCard from '../OrderCard';
-import { RelativePathString, router } from 'expo-router';
+import { router } from 'expo-router';
 import ProductCard from '../ProductCard';
 import RecipeCard from '../RecipeCard';
 import IngredientCard from '../IngredientCard';
